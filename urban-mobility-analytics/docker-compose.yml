@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: uma_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-urban_mobility}
+      POSTGRES_USER: ${POSTGRES_USER:-urban_mobility}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-urban_mobility}
+    ports:
+      - "5432:5432"
+    volumes:
+      - uma_postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-urban_mobility} -d ${POSTGRES_DB:-urban_mobility}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  airflow:
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    container_name: uma_airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # --- Airflow ---
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-urban_mobility}:${POSTGRES_PASSWORD:-urban_mobility}@postgres:5432/airflow
+      AIRFLOW__WEBSERVER__SECRET_KEY: uma-challenge-secret-key
+      PYTHONPATH: /opt/airflow/project
+      DBT_PROFILES_DIR: /opt/airflow/project/dbt/urban_mobility
+      # --- Config do pipeline (lida por config/settings.py dentro do container) ---
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-urban_mobility}
+      POSTGRES_USER: ${POSTGRES_USER:-urban_mobility}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-urban_mobility}
+      LAKE_BRONZE_PATH: /opt/airflow/project/data/bronze
+      LAKE_SILVER_PATH: /opt/airflow/project/data/silver
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/opt/airflow/project
+      - ./airflow/dags:/opt/airflow/dags
+      - uma_airflow_logs:/opt/airflow/logs
+    command: standalone
+
+volumes:
+  uma_postgres_data:
+  uma_airflow_logs:

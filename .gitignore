@@ -1,0 +1,30 @@
+_old/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Ambiente
+.env
+
+# Data lake (dados baixados/gerados)
+data/bronze/*
+data/silver/*
+data/bronze/.gitkeep
+data/silver/.gitkeep
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Airflow runtime
+airflow/logs/
+airflow/airflow.db
+airflow/airflow-webserver.pid
+
+.DS_Store
+*.swp

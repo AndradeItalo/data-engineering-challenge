@@ -1,0 +1,19 @@
+# ingestão/utilitários
+requests==2.32.3
+pandas==2.2.2
+pyarrow==16.1.0
+python-dotenv==1.0.1
+
+SQLAlchemy==2.0.31
+psycopg2-binary==2.9.9
+
+# processamento camada silver
+pyspark==3.5.1
+
+# dbt camada gold
+dbt-core==1.8.5
+dbt-postgres==1.8.2
+
+# testes
+pytest==8.2.2
+
