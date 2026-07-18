@@ -11,20 +11,19 @@ venv/
 .env
 
 # Data lake (dados baixados/gerados)
-data/bronze/*
-data/silver/*
-data/bronze/.gitkeep
-data/silver/.gitkeep
+urban-mobility-analytics/data/bronze/*
+urban-mobility-analytics/data/silver/*
+!urban-mobility-analytics/data/bronze/.gitkeep
+!urban-mobility-analytics/data/silver/.gitkeep
 
 # dbt
-target/
-dbt_packages/
-logs/
+urban-mobility-analytics/**/target/
+urban-mobility-analytics/**/dbt_packages/
+urban-mobility-analytics/**/logs/
 
 # Airflow runtime
-airflow/logs/
-airflow/airflow.db
-airflow/airflow-webserver.pid
+urban-mobility-analytics/airflow/airflow.db
+urban-mobility-analytics/airflow/airflow-webserver.pid
 
 .DS_Store
 *.swp
