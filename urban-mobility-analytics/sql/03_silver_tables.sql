@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS silver.trips (
+    vendor_id               INTEGER,
+    tpep_pickup_datetime    TIMESTAMP,
+    tpep_dropoff_datetime   TIMESTAMP,
+    passenger_count         BIGINT,
+    trip_distance           DOUBLE PRECISION,
+    rate_code_id            BIGINT,
+    store_and_fwd_flag      TEXT,
+    pu_location_id          INTEGER,
+    do_location_id          INTEGER,
+    payment_type            BIGINT,
+    fare_amount             DOUBLE PRECISION,
+    extra                   DOUBLE PRECISION,
+    mta_tax                 DOUBLE PRECISION,
+    tip_amount              DOUBLE PRECISION,
+    tolls_amount            DOUBLE PRECISION,
+    improvement_surcharge   DOUBLE PRECISION,
+    total_amount            DOUBLE PRECISION,
+    congestion_surcharge    DOUBLE PRECISION,
+    airport_fee              DOUBLE PRECISION,
+    cbd_congestion_fee       DOUBLE PRECISION,
+    pickup_date              DATE,
+    pickup_year_month        TEXT NOT NULL,
+    trip_duration_minutes    DOUBLE PRECISION,
+    is_valid_payment         BOOLEAN,
+    valid_revenue            DOUBLE PRECISION,
+    is_valid_trip            BOOLEAN NOT NULL,
+    invalid_reason           TEXT,
+    is_anomaly                BOOLEAN NOT NULL,
+    anomaly_reason            TEXT,
+    processed_at              TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_trips_year_month ON silver.trips (pickup_year_month);
+CREATE INDEX IF NOT EXISTS idx_trips_vendor ON silver.trips (vendor_id);
