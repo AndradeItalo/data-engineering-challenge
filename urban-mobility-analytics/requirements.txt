@@ -4,7 +4,7 @@ pandas==2.2.2
 pyarrow==16.1.0
 python-dotenv==1.0.1
 
-SQLAlchemy==2.0.31
+SQLAlchemy==1.4.52
 psycopg2-binary==2.9.9
 
 # processamento camada silver
