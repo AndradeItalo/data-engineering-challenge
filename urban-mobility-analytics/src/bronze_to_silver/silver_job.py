@@ -71,7 +71,7 @@ MAX_DISTANCE_MILES = 100.0
 
 def add_quality_columns(df):
     rule_datetimes = F.col("tpep_pickup_datetime").isNotNull() & F.col("tpep_dropoff_datetime").isNotNull()
-    rule_order = F.col("tpep_dropoff_datetime") > F.col("tpep_pickup_datetime")
+    rule_order = F.col("tpep_dropoff_datetime") >= F.col("tpep_pickup_datetime")
     rule_distance = F.col("trip_distance") >= 0
     rule_amount = F.col("total_amount") >= 0
     rule_rate_code = F.col("rate_code_id").isNull() | F.col("rate_code_id").isin([1, 2, 3, 4, 5, 6])
@@ -81,7 +81,7 @@ def add_quality_columns(df):
         F.concat_ws(
             ", ",
             F.when(~rule_datetimes, F.lit("datas de embarque/desembarque ausentes")),
-            F.when(rule_datetimes & ~rule_order, F.lit("desembarque anterior ou igual ao embarque")),
+            F.when(rule_datetimes & ~rule_order, F.lit("desembarque anterior ao embarque")),
             F.when(~rule_distance, F.lit("distância negativa")),
             F.when(~rule_amount, F.lit("valor total negativo")),
             F.when(~rule_rate_code, F.lit("tipo de tarifa fora do dicionário")),

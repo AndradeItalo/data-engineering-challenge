@@ -20,6 +20,7 @@ urban-mobility-analytics/data/silver/*
 urban-mobility-analytics/**/target/
 urban-mobility-analytics/**/dbt_packages/
 urban-mobility-analytics/**/logs/
+urban-mobility-analytics/**/.user.yml
 
 # Airflow runtime
 urban-mobility-analytics/airflow/airflow.db

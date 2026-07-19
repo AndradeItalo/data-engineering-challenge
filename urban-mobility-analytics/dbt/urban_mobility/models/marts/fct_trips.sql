@@ -1,0 +1,33 @@
+with trips as (
+    select * from {{ ref('stg_trips') }}
+),
+
+payment as (
+    select payment_type from {{ ref('dim_payment_type') }}
+)
+
+select
+    {{ dbt_utils.generate_surrogate_key(['trips.vendor_id', 'trips.tpep_pickup_datetime', 'trips.tpep_dropoff_datetime', 'trips.pu_location_id', 'trips.do_location_id', 'trips.payment_type', 'trips.total_amount']) }} as trip_sk,
+    dim_date.date_id,
+    trips.pickup_year_month,
+    trips.vendor_id,
+    coalesce(payment.payment_type, -1) as payment_type_id,
+    trips.pu_location_id,
+    trips.do_location_id,
+    trips.passenger_count,
+    trips.trip_distance,
+    trips.trip_duration_minutes,
+    trips.fare_amount,
+    trips.tip_amount,
+    trips.tolls_amount,
+    trips.total_amount,
+    trips.valid_revenue,
+    trips.is_valid_trip,
+    trips.invalid_reason,
+    trips.is_anomaly,
+    trips.anomaly_reason
+from trips
+inner join {{ ref('dim_date') }} as dim_date
+    on trips.pickup_date = dim_date.date_day
+left join payment
+    on trips.payment_type = payment.payment_type

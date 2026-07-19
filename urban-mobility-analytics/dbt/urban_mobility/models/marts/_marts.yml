@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: dim_date
+    columns:
+      - name: date_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_vendor
+    columns:
+      - name: vendor_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_payment_type
+    columns:
+      - name: payment_type
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_trips
+    columns:
+      - name: trip_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: date_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_id
+      - name: vendor_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_vendor')
+              field: vendor_id
+      - name: payment_type_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_payment_type')
+              field: payment_type
+      - name: total_amount
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              config:
+                where: "is_valid_trip"

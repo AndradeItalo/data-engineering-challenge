@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: silver
+    schema: silver
+    tables:
+      - name: trips
+
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: payment_type_reference
+        columns:
+          - name: payment_type
+            data_tests:
+              - unique
+              - not_null

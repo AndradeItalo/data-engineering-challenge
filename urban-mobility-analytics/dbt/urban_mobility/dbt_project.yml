@@ -1,0 +1,24 @@
+name: "urban_mobility"
+version: "1.0.0"
+config-version: 2
+
+profile: "urban_mobility"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "target"
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  urban_mobility:
+    staging:
+      +materialized: view
+      +schema: gold
+    marts:
+      +materialized: table
+      +schema: gold
+    gold:
+      +schema: gold
