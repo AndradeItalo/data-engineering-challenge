@@ -6,8 +6,8 @@ from sqlalchemy import text
 import io
 
 import argparse
-from config.settings import DefaultCompetency, LakeConfig, PostgresConfig, TLCConfig
-from src.utils.db import get_engine
+from src.common.db import get_engine
+from src.common.settings import DefaultCompetency, LakeConfig, PostgresConfig, TLCConfig
 
 
 def download_parquet(year: int, month: int, bronze_path: Path, base_url: str, force: bool = False) -> Path:
@@ -99,7 +99,7 @@ def main() -> None:
     lake = LakeConfig.from_env()
     engine = get_engine(PostgresConfig.from_env())
 
-    months = [args.month] if args.month else list(range(1, 13))
+    months = [args.month] if args.month else list(range(1, 10))
 
     total = 0
     for month in months:

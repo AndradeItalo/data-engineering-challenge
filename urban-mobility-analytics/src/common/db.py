@@ -6,7 +6,7 @@ from typing import Optional
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
-from config.settings import PostgresConfig
+from src.common.settings import PostgresConfig
 
 _engine: Optional[Engine] = None
 

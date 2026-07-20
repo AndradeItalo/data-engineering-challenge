@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:16
     container_name: uma_postgres
+    shm_size: '1gb'
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-urban_mobility}
       POSTGRES_USER: ${POSTGRES_USER:-urban_mobility}

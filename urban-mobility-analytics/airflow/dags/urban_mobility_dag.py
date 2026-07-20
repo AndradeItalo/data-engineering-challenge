@@ -31,7 +31,7 @@ def resolve_competency(**context):
 def refresh_materialized_view(**context):
     import psycopg2
 
-    from config.settings import PostgresConfig
+    from src.common.settings import PostgresConfig
 
     pg = PostgresConfig.from_env()
     conn = psycopg2.connect(host=pg.host, port=pg.port, dbname=pg.database, user=pg.user, password=pg.password)
@@ -68,12 +68,12 @@ with DAG(
 
     t_download = BashOperator(
         task_id="download_bronze",
-        bash_command=f"cd {PROJECT_DIR} && python -m src.ingestion.download_tlc_data --year {year_expr} --month {month_expr}",
+        bash_command=f"cd {PROJECT_DIR} && python -m src.bronze.download_tlc_data --year {year_expr} --month {month_expr}",
     )
 
     t_silver = BashOperator(
         task_id="process_silver",
-        bash_command=f"cd {PROJECT_DIR} && python -m src.bronze_to_silver.silver_job --year {year_expr} --month {month_expr}",
+        bash_command=f"cd {PROJECT_DIR} && python -m src.silver.silver_job --year {year_expr} --month {month_expr}",
     )
 
     t_dbt_deps = BashOperator(

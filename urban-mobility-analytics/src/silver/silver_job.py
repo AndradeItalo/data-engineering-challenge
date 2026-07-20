@@ -1,10 +1,10 @@
 from pathlib import Path
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from config.settings import PostgresConfig
+from src.common.settings import PostgresConfig
 import psycopg2
 import argparse
-from config.settings import DefaultCompetency, LakeConfig
+from src.common.settings import DefaultCompetency, LakeConfig
 
 
 def build_spark_session() -> SparkSession:
@@ -70,11 +70,12 @@ MAX_DISTANCE_MILES = 100.0
 
 
 def add_quality_columns(df):
+    # 5 regras de qualidade -> is_valid_trip / invalid_reason
     rule_datetimes = F.col("tpep_pickup_datetime").isNotNull() & F.col("tpep_dropoff_datetime").isNotNull()
     rule_order = F.col("tpep_dropoff_datetime") >= F.col("tpep_pickup_datetime")
     rule_distance = F.col("trip_distance") >= 0
     rule_amount = F.col("total_amount") >= 0
-    rule_rate_code = F.col("rate_code_id").isNull() | F.col("rate_code_id").isin([1, 2, 3, 4, 5, 6])
+    rule_rate_code = F.col("rate_code_id").isNull() | F.col("rate_code_id").isin([1, 2, 3, 4, 5, 6])  # tarifas 1-6 = dicionário oficial da TLC
 
     df = df.withColumn(
         "invalid_reason",
@@ -93,6 +94,7 @@ def add_quality_columns(df):
     )
     df = df.withColumn("is_valid_trip", F.col("invalid_reason").isNull())
 
+    # sinaliza, não invalida a corrida
     df = df.withColumn(
         "anomaly_reason",
         F.concat_ws(
@@ -112,6 +114,7 @@ def add_quality_columns(df):
     )
     df = df.withColumn("is_anomaly", F.col("anomaly_reason").isNotNull())
 
+    # receita só conta se o pagamento for confiável
     df = df.withColumn(
         "valid_revenue",
         F.when(F.col("is_valid_payment") == True, F.col("total_amount")).otherwise(F.lit(0.0)), 
@@ -196,7 +199,7 @@ def main():
     properties = jdbc_properties(pg)
 
     spark = build_spark_session()
-    months = [args.month] if args.month else list(range(1, 13))
+    months = [args.month] if args.month else list(range(1, 10))
 
     total = 0
     for month in months:
