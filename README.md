@@ -4,6 +4,11 @@ Pipeline de dados para análise de corridas de táxi de Nova York (NYC TLC Yello
 
 O código do pipeline está em [`urban-mobility-analytics/`](urban-mobility-analytics/).
 
+## Documentação
+
+- [`urban-mobility-analytics/docs/execution.md`](urban-mobility-analytics/docs/execution.md) — passo a passo completo de execução (do zero), backfill e troubleshooting.
+- [`urban-mobility-analytics/docs/results.md`](urban-mobility-analytics/docs/results.md) — amostra real do resultado da materialized view de indicadores.
+
 ## Arquitetura
 
 `NYC TLC → BRONZE → SILVER → GOLD`
@@ -74,8 +79,6 @@ docker compose run --rm --workdir /opt/airflow/project/dbt/urban_mobility --entr
   -c "dbt deps && dbt run && dbt test"
 ```
 
-Detalhes, backfill do período e troubleshooting em [`urban-mobility-analytics/docs/execution.md`](urban-mobility-analytics/docs/execution.md).
-
 ## Regras de negócio — camada silver
 
 A partir de `bronze.yellow_tripdata`, o job PySpark:
@@ -94,5 +97,3 @@ A partir de `bronze.yellow_tripdata`, o job PySpark:
 - valor total das corridas com pagamento válido;
 - ticket médio (valor total cobrado por corrida);
 - distância média.
-
-Amostra real do resultado (dado de banco, não versionado no git) em [`urban-mobility-analytics/docs/results.md`](urban-mobility-analytics/docs/results.md).
