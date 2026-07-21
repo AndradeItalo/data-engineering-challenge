@@ -2,7 +2,7 @@
 
 Pipeline de dados para análise de corridas de táxi de Nova York (NYC TLC Yellow Taxi), construído em arquitetura medalhão (bronze/silver/gold), orquestrado semanalmente pelo Airflow.
 
-O código do pipeline está em [`urban-mobility-analytics/`](urban-mobility-analytics/). A pasta `_old/` guarda uma tentativa anterior, arquivada como referência — não faz parte da entrega.
+O código do pipeline está em [`urban-mobility-analytics/`](urban-mobility-analytics/).
 
 ## Arquitetura
 
