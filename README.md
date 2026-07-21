@@ -21,6 +21,11 @@ GOLD     gold.dim_date / dim_vendor / dim_payment_type / fct_trips
          gold.mv_monthly_indicators (materialized view)
 ```
 
+- **Fonte (NYC TLC)** — arquivos parquet públicos, um por competência mensal (`yellow_tripdata_YYYY-MM.parquet`).
+- **Bronze** — dado bruto, sem transformação, mais colunas de linhagem (`source_file`, `source_year_month`, `ingested_at`) que permitem rastrear origem e reprocessar uma competência sem duplicar. Vive como parquet em `data/bronze/` e como `bronze.yellow_tripdata` no Postgres, junto da tabela de referência `bronze.payment_type_reference`.
+- **Silver** — dado tratado pelo job PySpark: regras de qualidade, colunas derivadas (`pickup_date`, `pickup_year_month`, `trip_duration_minutes`), flags de anomalia e de receita válida (ver [Regras de negócio](#regras-de-negócio--camada-silver)). Vive como parquet particionado por mês em `data/silver/` e como `silver.trips` no Postgres.
+- **Gold** — modelagem dimensional feita pelo dbt a partir da silver: dimensões (`dim_date`, `dim_vendor`, `dim_payment_type`), fato (`fct_trips`) e a materialized view de indicadores (`mv_monthly_indicators`) — todas no schema `gold` do Postgres (ver [Indicadores](#indicadores--camada-gold)).
+
 Cada camada tem seu próprio schema no Postgres (`bronze`, `silver`, `gold`), e a bronze/silver também existem como parquet no disco (o data lake de fato), servindo o Postgres como camada de consulta/curadoria.
 
 ## Por que cada ferramenta
@@ -51,7 +56,9 @@ urban-mobility-analytics/
 │   └── view/                  # mv_monthly_indicators (materialized view)
 ├── tests/                    # pytest (regras de qualidade da silver)
 ├── data/                     # data lake local (bronze/silver, ignorado pelo git)
-└── docs/execution.md         # passo a passo de execução
+└── docs/
+    ├── execution.md          # passo a passo de execução
+    └── results.md            # amostra real do resultado da MV
 ```
 
 Cada tabela de `dim/`, `fact/` e `view/` tem seu próprio arquivo `.yml` de testes/documentação ao lado do `.sql` (ex.: `_dim_date.yml`, `_fct_trips.yml`), em vez de um arquivo único cobrindo todas — mais fácil de achar o teste de uma tabela específica e de revisar em PRs pequenos.
