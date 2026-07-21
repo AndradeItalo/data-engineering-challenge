@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: dim_payment_type
+    columns:
+      - name: payment_type
+        data_tests:
+          - unique
+          - not_null

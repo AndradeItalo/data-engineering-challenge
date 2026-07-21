@@ -17,8 +17,11 @@ models:
     staging:
       +materialized: view
       +schema: gold
-    marts:
+    dim:
       +materialized: table
       +schema: gold
-    gold:
+    fact:
+      +materialized: table
+      +schema: gold
+    view:
       +schema: gold

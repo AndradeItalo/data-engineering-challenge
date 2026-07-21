@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: dim_vendor
+    columns:
+      - name: vendor_id
+        data_tests:
+          - unique
+          - not_null

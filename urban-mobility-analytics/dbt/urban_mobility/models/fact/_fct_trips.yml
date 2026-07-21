@@ -1,27 +1,6 @@
 version: 2
 
 models:
-  - name: dim_date
-    columns:
-      - name: date_id
-        data_tests:
-          - unique
-          - not_null
-
-  - name: dim_vendor
-    columns:
-      - name: vendor_id
-        data_tests:
-          - unique
-          - not_null
-
-  - name: dim_payment_type
-    columns:
-      - name: payment_type
-        data_tests:
-          - unique
-          - not_null
-
   - name: fct_trips
     columns:
       - name: trip_sk
