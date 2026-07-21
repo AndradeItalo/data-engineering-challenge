@@ -6,20 +6,7 @@ O código do pipeline está em [`urban-mobility-analytics/`](urban-mobility-anal
 
 ## Arquitetura
 
-```
-NYC TLC (parquet público)
-   │  Python (requests): download incremental por competência
-   ▼
-BRONZE   data/bronze/*.parquet  +  bronze.yellow_tripdata (Postgres)
-         bronze.payment_type_reference (tabela de referência)
-   │  PySpark: regras de qualidade, colunas derivadas, anomalias
-   ▼
-SILVER   data/silver/ (parquet particionado por mês)  +  silver.trips (Postgres)
-   │  dbt: staging → dimensões + fato
-   ▼
-GOLD     gold.dim_date / dim_vendor / dim_payment_type / fct_trips
-         gold.mv_monthly_indicators (materialized view)
-```
+`NYC TLC → BRONZE → SILVER → GOLD`
 
 - **Fonte (NYC TLC)** — arquivos parquet públicos, um por competência mensal (`yellow_tripdata_YYYY-MM.parquet`).
 - **Bronze** — dado bruto, sem transformação, mais colunas de linhagem (`source_file`, `source_year_month`, `ingested_at`) que permitem rastrear origem e reprocessar uma competência sem duplicar. Vive como parquet em `data/bronze/` e como `bronze.yellow_tripdata` no Postgres, junto da tabela de referência `bronze.payment_type_reference`.
